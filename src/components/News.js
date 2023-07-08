@@ -56,12 +56,14 @@ export class News extends Component {
     },
   ];
 
+ // main methods
   constructor(){
     super()
     console.log("This is Constructor fromfrom News Component")
     this.state = {
       articles: [],
-      loading : false
+      loading : false,
+      page:1
     }
   }
 
@@ -71,8 +73,32 @@ export class News extends Component {
     let data = await fetch(url);
     let parsedData = await data.json();
 
-    this.setState({articles: parsedData.articles})
+    this.setState({articles: parsedData.articles, totalResults: parsedData.totalResults})
     console.log(parsedData);
+  }
+
+   handleNextclick= async()=>{
+    console.log("Next Clickd")
+    if(this.state.page +1 > Math.ceil(this.state.totalResults/20)){
+
+    }
+    else{
+      let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=e87722c78b854590a0a98b287b3a23ae&page=${this.state.page+1}&pagesize=20`
+      let data = await fetch(url);
+      let parsedData = await data.json();
+      this.setState({page: this.state.page +1, articles: parsedData.articles })
+    }
+
+  }
+     handlePrevclick= async()=>{
+    console.log("Prev Clickd")
+    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=e87722c78b854590a0a98b287b3a23ae&page=${this.state.page - 1}}&pagesize=20`
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    this.setState({
+      page: this.state.page - 1,
+      articles: parsedData.articles
+    })
   }
 
   render() {
@@ -88,6 +114,11 @@ export class News extends Component {
             />
           </div> 
         })}
+        <div className=" container d-flex justify-content-between">
+        <button disabled={this.state.page<=1}type="button" className="btn btn-secondary" onClick={this.handlePrevclick}>&#8249; Prev.</button>
+        <button type="button" className="btn btn-secondary" onClick={this.handleNextclick}>Next &#8250;</button>  
+        
+        </div>
 
         </div>
       </div>
