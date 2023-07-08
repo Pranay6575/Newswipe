@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Newsitem from "./Newsitem";
+import Spinner from "./Spinner";
 
 export class News extends Component {
   articles = [
@@ -56,70 +57,109 @@ export class News extends Component {
     },
   ];
 
- // main methods
-  constructor(){
-    super()
-    console.log("This is Constructor fromfrom News Component")
+  // main methods
+  constructor() {
+    super();
+    console.log("This is Constructor fromfrom News Component");
     this.state = {
       articles: [],
-      loading : false,
-      page:1
-    }
+      loading: false,
+      page: 1,
+    };
   }
 
-  async componentDidMount(){
-    console.log("cdm called")
-    let url = 'https://newsapi.org/v2/top-headlines?country=in&apiKey=e87722c78b854590a0a98b287b3a23ae'
+  async componentDidMount() {
+    console.log("cdm called");
+    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=e87722c78b854590a0a98b287b3a23ae&page=1&pagesize=${this.props.pageSize}`;
+    this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
 
-    this.setState({articles: parsedData.articles, totalResults: parsedData.totalResults})
+    this.setState({
+      articles: parsedData.articles,
+      totalResults: parsedData.totalResults,
+      loading: false
+    });
     console.log(parsedData);
   }
 
-   handleNextclick= async()=>{
-    console.log("Next Clickd")
-    if(this.state.page +1 > Math.ceil(this.state.totalResults/20)){
-
-    }
-    else{
-      let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=e87722c78b854590a0a98b287b3a23ae&page=${this.state.page+1}&pagesize=20`
+  handleNextclick = async () => {
+    console.log("Next Clickd");
+    if (
+      !(
+        this.state.page + 1 >
+        Math.ceil(this.state.totalResults / this.props.pageSize)
+      )
+    ) {
+      let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=e87722c78b854590a0a98b287b3a23ae&page=${
+        this.state.page + 1
+      }&pageSize=${this.props.pageSize}`;
+      this.setState({ loading: true });
       let data = await fetch(url);
       let parsedData = await data.json();
-      this.setState({page: this.state.page +1, articles: parsedData.articles })
+      this.setState({
+        page: this.state.page + 1,
+        articles: parsedData.articles,
+        loading: false,
+      });
     }
+  };
 
-  }
-     handlePrevclick= async()=>{
-    console.log("Prev Clickd")
-    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=e87722c78b854590a0a98b287b3a23ae&page=${this.state.page - 1}}&pagesize=20`
+  handlePrevclick = async () => {
+    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=e87722c78b854590a0a98b287b3a23ae&page=${
+      this.state.page - 1
+    }}&pageSize=${this.props.pageSize}`;
+    this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
     this.setState({
       page: this.state.page - 1,
-      articles: parsedData.articles
-    })
-  }
+      articles: parsedData.articles,
+      loading: false,
+    });
+  };
 
   render() {
-    console.log("Render called")
     return (
       <div className="container my-3">
-        <h1>NewsWipe - Top Headlines</h1>
-        
+        <h1 className="text-center">NewsWipe - Top Headlines</h1>
+        {this.state.loading && <Spinner />}
         <div className="row">
-        {this.state.articles.map((element)=>{
-           return <div className="col-md-4" key={element.url}>
-            <Newsitem title={element.title?element.title.slice(0,40):""}description={element.description?element.description.slice(0,78):""}imageUrl={element.urlToImage}newsUrl = {element.url}
-            />
-          </div> 
-        })}
-        <div className=" container d-flex justify-content-between">
-        <button disabled={this.state.page<=1}type="button" className="btn btn-secondary" onClick={this.handlePrevclick}>&#8249; Prev.</button>
-        <button type="button" className="btn btn-secondary" onClick={this.handleNextclick}>Next &#8250;</button>  
-        
-        </div>
-
+          {!this.state.loading && this.state.articles.map((element) => {
+            return (
+              <div className="col-md-4" key={element.url}>
+                <Newsitem
+                  title={element.title ? element.title.slice(0, 40) : ""}
+                  description={
+                    element.description ? element.description.slice(0, 78) : ""
+                  }
+                  imageUrl={element.urlToImage}
+                  newsUrl={element.url}
+                />
+              </div>
+            );
+          })}
+          <div className=" container d-flex justify-content-between">
+            <button
+              disabled={this.state.page <= 1}
+              type="button"
+              className="btn btn-secondary"
+              onClick={this.handlePrevclick}
+            >
+              &#8249; Prev.
+            </button>
+            <button
+              disabled={
+                this.state.page + 1 >
+                Math.ceil(this.state.totalResults / this.props.pageSize)
+              }
+              type="button"
+              className="btn btn-secondary"
+              onClick={this.handleNextclick}
+            >
+              Next &#8250;
+            </button>
+          </div>
         </div>
       </div>
     );
