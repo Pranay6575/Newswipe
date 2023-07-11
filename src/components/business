@@ -1,7 +1,11 @@
-Business
-Entertainment
-General
-Health
-Science
-Sports
-Technology
+<Route path="/Business" element={<News pageSize={5} country ='in' category = 'Technology'/>} />
+<Route path="/Entertainment" element={<News pageSize={5} country ='in' category = 'Technology'/>} />
+<Route path="/General" element={<News pageSize={5} country ='in' category = 'Technology'/>} />
+<Route path="/Health" element={<News pageSize={5} country ='in' category = 'Technology'/>} />
+<Route path="/Science" element={<News pageSize={5} country ='in' category = 'Technology'/>} />
+<Route path="/Sports" element={<News pageSize={5} country ='in' category = 'Technology'/>} />
+<Route path="/Technology" element={<News pageSize={5} country ='in' category = 'Technology'/>} />
+
+
+
+<Route path="/Business" element={<News pageSize={5} country ='in' category = 'Technology'/>} />
