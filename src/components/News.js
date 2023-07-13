@@ -18,14 +18,14 @@ export class News extends Component {
     }
 
   // main methods
-  constructor() {
-    super();
-    console.log("This is Constructor from News Component");
+  constructor(props) {
+    super(props);
     this.state = {
       articles: [],
       loading: false,
       page: 1,
     };
+    document.title = `${this.props.category} - NewsWipe`
   }
 
   async updateNews(){
@@ -39,6 +39,7 @@ export class News extends Component {
       totalResults: parsedData.totalResults,
       loading: false
     });
+
   }
   async componentDidMount() {
     this.updateNews();
@@ -59,7 +60,7 @@ export class News extends Component {
   render() {
     return (
       <div className="container my-3">
-        <h1 className="text-center" style={{margin:"30px 0px" }}>NewsWipe - Top Headlines</h1>
+        <h1 className="text-center" style={{margin:"30px 0px" }}>NewsWipe - Top {this.props.category} Headlines</h1>
         {this.state.loading && <Spinner />}
         <div className="row">
           {!this.state.loading && this.state.articles.map((element) => {
