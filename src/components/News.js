@@ -9,47 +9,35 @@ const News = (props) => {
 
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
-  const [page, setPage] = useState(0)
+  const [page, setPage] = useState(1)
   const [totalResults, setTotalResults] = useState(0)
-  // document.title = `${props.category} - NewsWipe`
 
   // main methods
 
 
   const updateNews = async () => {
+    // eslint-disable-next-line
     let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=e87722c78b854590a0a98b287b3a23ae&page=${page}&pagesize=${props.pageSize}`;
     setLoading(true)
     let data = await fetch(url);
     let parsedData = await data.json();
-
     setArticles(parsedData.articles);
     setTotalResults(parsedData.totalResults);
     setLoading(false)
   }
   useEffect(() => {
+      document.title = `${props.category} - NewsWipe`
     updateNews();
   }, [])
 
 
- const handleNextclick = async () => {
-
-    setPage(page + 1);
-    updateNews();
-  };
-
-  const handlePrevclick = async () => {
-
-    setPage(page - 1);
-    updateNews();
-  };
+ 
 
  const fetchMoreData = async () => {
-    setPage(page + 1);
-    let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=e87722c78b854590a0a98b287b3a23ae&page=${page}&pagesize=${props.pageSize}`;
-    
+   let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=e87722c78b854590a0a98b287b3a23ae&page=${page + 1}&pagesize=${props.pageSize}`;
+   setPage(page + 1);
     let data = await fetch(url);
     let parsedData = await data.json();
-
     setArticles(articles.concat(parsedData.articles));
     setTotalResults(parsedData.totalResults)
     
@@ -59,7 +47,7 @@ const News = (props) => {
   
     return (
       <>
-        <h1 className="text-center" style={{ margin: "30px 0px" }}>NewsWipe - Top {props.category} Headlines</h1>
+        <h1 className="text-center" style={{ margin: "30px 0px", marginTop: "90px" }}>NewsWipe - Top {props.category} Headlines</h1>
         {/* {this.state.loading && <Spinner />} */}
 
         <InfiniteScroll
