@@ -18,6 +18,7 @@ const App = () => {
           <Navbar />
 
           <Routes>
+            
             <Route path="/" element={<News setProgress={setProgress} key="General" pageSize={pageSize} country="in" category="General" />} />
             <Route path="/Business" element={<News setProgress={setProgress} key="Business" pageSize={pageSize} country="in" category="Business" />} />
             <Route path="/Entertainment" element={<News setProgress={setProgress} key="Entertainment" pageSize={pageSize} country="in" category="Entertainment" />} />
